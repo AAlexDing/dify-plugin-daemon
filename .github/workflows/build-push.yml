@@ -15,12 +15,12 @@ concurrency:
 env:
   DOCKERHUB_USER: ${{ secrets.DOCKERHUB_USER }}
   DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
-  DIFY_DAEMON_IMAGE_NAME: ${{ vars.DIFY_DAEMON_IMAGE_NAME || 'langgenius/dify-plugin-daemon' }}
+  DIFY_DAEMON_IMAGE_NAME: ${{ vars.DIFY_DAEMON_IMAGE_NAME || 'dinggg/dify-plugin-daemon' }}
 
 jobs:
   build:
     runs-on: ${{ matrix.platform == 'linux/arm64' && 'arm64_runner' || 'ubuntu-latest' }}
-    if: github.repository == 'langgenius/dify-plugin-daemon'
+    if: github.repository == 'AAlexDing/dify-plugin-daemon'
     strategy:
       matrix:
         include:
@@ -28,15 +28,10 @@ jobs:
             image_name_env: "DIFY_DAEMON_IMAGE_NAME"
             platform: linux/amd64
             scope: serverless
-          - service_name: "build-serverless-daemon-arm64"
-            image_name_env: "DIFY_DAEMON_IMAGE_NAME"
-            platform: linux/arm64
-            scope: serverless
           - service_name: "build-local-daemon-amd64"
             image_name_env: "DIFY_DAEMON_IMAGE_NAME"
             platform: linux/amd64
             scope: local
-          - service_name: "build-local-daemon-arm64"
             image_name_env: "DIFY_DAEMON_IMAGE_NAME"
             platform: linux/arm64
             scope: local
@@ -103,7 +98,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ vars.DIFY_DAEMON_IMAGE_NAME || 'langgenius/dify-plugin-daemon' }}
+          images: ${{ vars.DIFY_DAEMON_IMAGE_NAME || 'dinggg/dify-plugin-daemon' }}
           tags: |
             type=raw,value=latest,enable=${{ startsWith(github.ref, 'refs/tags/') }}
             type=ref,event=branch

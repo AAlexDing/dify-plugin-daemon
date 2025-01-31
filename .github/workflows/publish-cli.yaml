@@ -11,7 +11,7 @@ concurrency:
 jobs:
   build:
     runs-on: ${{ matrix.platform == 'linux/arm64' && 'arm64_runner' || 'ubuntu-latest' }}
-    if: github.repository == 'langgenius/dify-plugin-daemon'
+    if: github.repository == 'AAlexDing/dify-plugin-daemon'
     strategy:
       matrix:
         include:

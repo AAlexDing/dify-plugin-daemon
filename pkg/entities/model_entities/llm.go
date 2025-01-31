@@ -58,20 +58,8 @@ type PromptMessage struct {
 
 func isPromptMessageContent(fl validator.FieldLevel) bool {
 	// only allow string or []PromptMessageContent
-	value := fl.Field().Interface()
-	switch valueType := value.(type) {
-	case string:
-		return true
-	case []PromptMessageContent:
-		// validate the content
-		for _, content := range valueType {
-			if err := validators.GlobalEntitiesValidator.Struct(content); err != nil {
-				return false
-			}
-		}
-		return true
-	}
-	return false
+	// value := fl.Field().Interface()
+	return true
 }
 
 type PromptMessageContentType string
@@ -99,7 +87,9 @@ func isPromptMessageContentType(fl validator.FieldLevel) bool {
 
 type PromptMessageContent struct {
 	Type         PromptMessageContentType `json:"type" validate:"required,prompt_message_content_type"`
-	Data         string                   `json:"data" validate:"required"`
+	Data         string                   `json:"data"`
+	Base64Data   string                   `json:"base64_data"`
+	Url          string                   `json:"url"`
 	EncodeFormat string                   `json:"encode_format"`
 	Format       string                   `json:"format"`
 	MimeType     string                   `json:"mime_type"`
@@ -128,16 +118,17 @@ func (p *PromptMessage) UnmarshalJSON(data []byte) error {
 	}
 
 	// Check if content is a string or an array which contains type and content
-	if _, ok := raw["content"]; ok {
-		var content string
-		if err := json.Unmarshal(raw["content"], &content); err == nil {
-			p.Content = content
+	if content, ok := raw["content"]; ok {
+		var contentStr string
+		if err := json.Unmarshal(content, &contentStr); err == nil {
+			p.Content = contentStr
 		} else {
-			var content []PromptMessageContent
-			if err := json.Unmarshal(raw["content"], &content); err != nil {
+			var contentArray []PromptMessageContent
+			if err := json.Unmarshal(content, &contentArray); err != nil {
 				return err
 			}
-			p.Content = content
+			// 保持 base64_data 和 url 字段不变
+			p.Content = contentArray
 		}
 	} else {
 		return errors.New("content field is required")
