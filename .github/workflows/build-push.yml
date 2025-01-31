@@ -32,9 +32,6 @@ jobs:
             image_name_env: "DIFY_DAEMON_IMAGE_NAME"
             platform: linux/amd64
             scope: local
-            image_name_env: "DIFY_DAEMON_IMAGE_NAME"
-            platform: linux/arm64
-            scope: local
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
